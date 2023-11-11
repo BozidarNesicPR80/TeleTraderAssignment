@@ -1,0 +1,68 @@
+﻿<Window x:Class="TeleTraderAssignment.Views.SymbolManipulationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TeleTraderAssignment"
+        mc:Ignorable="d"
+        Title="Symbol Manipulation" Height="400" Width="350">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Add Symbol" FontSize="32" Margin="0, 0, 0, 10" ></TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="Name:" Width="90"/>
+            <TextBox Text="test" Width="150" Margin="0, 4, 0, 0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="Ticker:" Width="90"/>
+            <TextBox Text="test" Width="150" Margin="0, 4, 0, 0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="ISIN:" Width="90"/>
+            <TextBox Text="test" Width="150" Margin="0, 4, 0, 0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="Currency Code:"  Width="90"/>
+            <TextBox Text="test" Width="150" Margin="0, 4, 0, 0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="Date Added:"  Width="90"/>
+            <DatePicker  Width="150" Margin="0, 4, 0, 0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="6" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="Price:"  Width="90"/>
+            <TextBox Text="test" Width="150" Margin="0, 4, 0, 0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="7" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="Price Date:"  Width="90"/>
+            <DatePicker Width="150" Margin="0, 4, 0, 0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="8" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="Type:"  Width="90"/>
+            <ComboBox  Width="150" Margin="0, 4, 0, 0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="9" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="Exchange:"  Width="90"/>
+            <ComboBox  Width="150" Margin="0, 4, 0, 0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="10" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Content="Save" Margin="0, 20, 10, 0" Width="75" Height="25"/>
+            <Button Content="Cancel" Margin="0, 20, 0, 0" Width="75" Height="25"/>
+        </StackPanel>
+    </Grid>
+</Window>
