@@ -3,10 +3,88 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TeleTraderAssignment"
+        xmlns:local="clr-namespace:TeleTraderAssignment.Views"
+        xmlns:vm="clr-namespace:TeleTraderAssignment.ViewModel"
         mc:Ignorable="d"
-        Title="All Symbols" Height="500" Width="800">
+        Title="All Symbols" Height="475" Width="800" Background="LightBlue">
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="CustomButtonStyle" TargetType="Button">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsDbLoaded}" Value="True">
+                    <Setter Property="Background" Value="#3498db" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="BorderBrush" Value="#2980b9" />
+                    <Setter Property="BorderThickness" Value="2" />
+                    <Setter Property="Padding" Value="10,5" />
+                    <Setter Property="FontFamily" Value="Segoe UI" />
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Grid>
+                                    <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#2980b9" />
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#2071a0" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsDbLoaded}" Value="False">
+                    <Setter Property="Background" Value="#bdc3c7"/>
+                    <Setter Property="Foreground" Value="#7f8c8d"/>
+                    <Setter Property="BorderThickness" Value="2" />
+                    <Setter Property="Padding" Value="10,5" />
+                    <Setter Property="FontFamily" Value="Segoe UI" />
+                    <Setter Property="FontSize" Value="10.5" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Background" Value="#3498db" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="BorderBrush" Value="#2980b9" />
+                <Setter Property="BorderThickness" Value="2" />
+                <Setter Property="Padding" Value="10,5" />
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#2980b9" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#2071a0" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -15,31 +93,66 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0">
-            <Button Content="Load Content" HorizontalAlignment="Center" Margin="0, 10, 0, 0" Width="250" Height="30"/>
+            <Button Content="Load Content" Command="{Binding LoadFileCommand}" HorizontalAlignment="Center" Margin="0, 10, 0, 0" Width="250" Height="30"/>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0, 10, 0, 0" HorizontalAlignment="Center">
-            <ComboBox Width="120" Height="30" Margin="0, 0, 10, 0"/>
-            <ComboBox Width="120" Height="30" Margin="0, 0, 10, 0"/>
-            <Button Content="Filter"  Width="200" Height="30"/>
+            <ComboBox x:Name="comboBoxTypes" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType, Mode=TwoWay}" SelectedIndex="0" Width="120" Height="25" Margin="0, 0, 10, 0"/>
+            <ComboBox x:Name="comboBoxExchanges" ItemsSource="{Binding Exchanges}" SelectedItem="{Binding SelectedExchange, Mode=TwoWay}" SelectedIndex="0" Width="120" Height="25" Margin="0, 0, 10, 0"/>
+            <Button Content="Filter"  Command="{Binding FilterSymbolsCommand}" Width="200" Height="25"
+                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" Style="{StaticResource CustomButtonStyle}"/>
         </StackPanel>
         <StackPanel Grid.Row="2" Margin="0, 10, 0, 10" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <DataGrid AutoGenerateColumns="False" Height="300" Width="760">
+            <DataGrid x:Name="dataGrid" ItemsSource="{Binding ViewSymbols}" SelectedItem="{Binding SelectedSymbol, Mode=TwoWay}" AutoGenerateColumns="False" Height="300" Width="760">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Width="300" Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Ticker"  Width="70" Binding="{Binding Ticker}" />
+                    <DataGridTextColumn Header="Name" Width="270" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Ticker" Width="70" Binding="{Binding Ticker}" />
                     <DataGridTextColumn Header="Price" Width="130" Binding="{Binding Price}" />
-                    <DataGridTextColumn Header="Exchange" Width="130" Binding="{Binding ExchangeName}" />
-                    <DataGridTextColumn Header="Type" Width="130" Binding="{Binding TypeName}" />
+                    <DataGridTextColumn Header="Exchange" Width="130" Binding="{Binding Exchange.Name}" />
+                    <DataGridTextColumn Header="Type" Width="130" Binding="{Binding Type.Name}" />
                 </DataGrid.Columns>
+
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="#2980b9"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Height" Value="30"/>
+                    </Style>
+
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="5">
+                                        <ContentPresenter />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#2980b9"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="BorderBrush" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="Height" Value="30"/>
+                    </Style>
+                </DataGrid.Resources>
             </DataGrid>
         </StackPanel>
 
-        <StackPanel  Margin="13, 0, 0, 0" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left">
-            <Button Content="Add Symbol" Width="120" Height="30"/>
-            <Button Content="View/Edit Symbol" Width="120" Height="30" Margin="10, 0, 10, 0"/>
-            <Button Content="Delete Symbol" Width="120" Height="30" Margin="0, 0, 260, 0"/>
-            <Button Content="Form Close" Width="120" Height="30"/>
-        </StackPanel>
 
+        <StackPanel  Margin="13, 0, 0, 0" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button Content="Add Symbol" Command="{Binding AddSymbolCommand}" Width="120" Height="30"
+                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" Style="{StaticResource CustomButtonStyle}"/>
+            <Button Content="View/Edit Symbol"  Command="{Binding ViewEditSymbolCommand}" Width="120" Height="30" Margin="10, 0, 10, 0"
+                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" Style="{StaticResource CustomButtonStyle}"/>
+            <Button Content="Delete Symbol" Command="{Binding DeleteSymbolCommand}" Width="120" Height="30" Margin="0, 0, 260, 0"
+                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" Style="{StaticResource CustomButtonStyle}"/>
+            <Button Content="Form Close" Command="{Binding FormCloseCommand}" Width="120" Height="30"
+                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" Style="{StaticResource CustomButtonStyle}"/>
+        </StackPanel>
     </Grid>
 </Window>
