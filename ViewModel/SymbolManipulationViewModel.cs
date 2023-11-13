@@ -184,6 +184,20 @@ namespace TeleTraderAssignment.ViewModel
             Symbol.Type = SelectedType;
             Symbol.TypeId = SelectedType.Id;
 
+            //provera da li su ticker i Isin jedinstveni
+            if (CheckIfIsinIsUnique(Symbol.Isin)){
+                isValid = false;
+                MessageBox.Show("Isin must be unique");
+                return;
+            }
+            if (CheckIfTickerIsUnique(Symbol.Ticker))
+            {
+                isValid = false;
+                MessageBox.Show("Ticker must be unique");
+                return;
+            }
+
+
             if (_isEdit)
             {
                 _context.Symbol.Update(symbol);
@@ -208,6 +222,23 @@ namespace TeleTraderAssignment.ViewModel
         private bool CanExecuteSaveChangesCommand(object parameter)
         {
             return true;
+        }
+
+        private bool CheckIfTickerIsUnique(string ticker)
+        {
+                var numOfDuplicatedTicker = _context.Symbol
+                    .Count(r => r.Ticker == ticker);
+
+                return numOfDuplicatedTicker == 1;
+        }
+
+        private bool CheckIfIsinIsUnique(string isin)
+        {
+                var numOfDuplicatedIsin = _context.Symbol
+                    .Count(r => r.Isin == isin);
+
+                return numOfDuplicatedIsin == 1;
+           
         }
 
         // Implementacija INotifyPropertyChanged interfejsa
