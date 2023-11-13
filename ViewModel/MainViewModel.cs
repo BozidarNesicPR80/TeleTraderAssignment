@@ -154,6 +154,8 @@ namespace TeleTraderAssignment.ViewModel
             }
         }
 
+        //"Load Content" dugme je na pocetku rada jedino moguce koristiti jer su sve ostale komponente vezane za ucitavanje baze
+        //Zato je komanda asocirana sa ovim dugmetom uvek izvrsiva, odnosno u svakom trenutku je moguce ucitati novu bazu u aplikaciju
         private void ExecuteLoadFileCommand(object parameter)
         {
             var openFileDialog = new OpenFileDialog
@@ -165,6 +167,7 @@ namespace TeleTraderAssignment.ViewModel
             if (openFileDialog.ShowDialog() == true)
             {
                 IsDbLoaded = true;
+                //Interakcija sa bazom se vrsi pomocu EF Core mehanizama
                 _context = new NewDbContext(openFileDialog.FileName);
                 LoadDataFromDB();
             }
@@ -189,17 +192,21 @@ namespace TeleTraderAssignment.ViewModel
             }
         }
 
+        //Da bi filter, add, delete, view komandni dugmici mogli da rade, prethodno je potrebno ucitati bazu
+        //U suprotnom ce kod pucati jer sve komande zahtevaju prisutnu bazu jer rade sa njenim podacima
+        //Zato su svi dugmici onemoguceni dok se ne ucita baza; Za indikaciju ucitavanja se koristi flag IsDbLoaded
         private void ExecuteFilterSymbolsCommand(object parameter)
         {
             if (!IsDbLoaded)
             {
-                MessageBox.Show("Greska, Baza nije ucitana!");
+                MessageBox.Show("Error, Database not loaded!");
                 return;
             }
 
             string selectedType = SelectedType;
             string selectedExchange = SelectedExchange;
 
+            //Postavlja se da je "All" uslov neutralan, odnosno ne uzima se u obzir
             List<Symbol> filteredSymbols = symbols.FindAll(symbol =>
             {
                 bool typeCondition = selectedType == "All" || symbol.Type.Name == selectedType;
@@ -239,7 +246,7 @@ namespace TeleTraderAssignment.ViewModel
         {
             if (!IsDbLoaded)
             {
-                MessageBox.Show("Greska, Baza nije ucitana!");
+                MessageBox.Show("Error, Database not loaded!");
                 return;
             }
 
@@ -278,7 +285,7 @@ namespace TeleTraderAssignment.ViewModel
         {
             if (!IsDbLoaded)
             {
-                MessageBox.Show("Greska, Baza nije ucitana!");
+                MessageBox.Show("Error, Database not loaded!");
                 return;
             }
 
@@ -314,25 +321,25 @@ namespace TeleTraderAssignment.ViewModel
         {
             if (!IsDbLoaded)
             {
-                MessageBox.Show("Greska, Baza nije ucitana!");
+                MessageBox.Show("Error, Database not loaded!");
                 return;
             }
 
             if (SelectedSymbol != null)
             {
-                // Pitajte korisnika da potvrdi brisanje
-                MessageBoxResult result = MessageBox.Show("Da li ste sigurni da želite da obrišete ovaj red?", "Potvrda brisanja", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                // Potvrda brisanja
+                MessageBoxResult result = MessageBox.Show("Are you sure that you want to delete this row?", "Delete approvement", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    // Obrišite odabrani red iz baze podataka ili liste, zavisno od vašeg scenarija
+                    // Brisanje simbola iz baze
                     _context.Symbol.Remove(selectedSymbol);
                     _context.SaveChanges();
 
-                    // Ponovo učitajte podatke kako biste osvežili DataGrid
+                    // Ponovo ucitavanje podataka
                     LoadDataFromDB();
 
-                    // Resetujte trenutno odabrani red
+                    // Resetuje trenutno odabrani red
                     selectedSymbol = null;
                 }
             }
@@ -356,6 +363,7 @@ namespace TeleTraderAssignment.ViewModel
         {
             if (IsDbLoaded)
             {
+                //ako je baza ucitana, prikazujemo podatke
                 Types = new List<string> { "All" };
                 Exchanges = new List<string> { "All" };
 
@@ -371,6 +379,7 @@ namespace TeleTraderAssignment.ViewModel
             }
             else
             {
+                //ovo je slucaj da baza nije ucitana, odnosno da smo pritisnuli dugme "Form Close", time brisemo sve prikazane podatke
                 Types = null;
                 Exchanges = null;
                 ViewSymbols = null;
@@ -399,10 +408,11 @@ namespace TeleTraderAssignment.ViewModel
         {
             if (!IsDbLoaded)
             {
-                MessageBox.Show("Greška, Baza nije učitana!");
+                MessageBox.Show("Error, Database not loaded!");
                 return;
             }
 
+            //ovime se signalizira da se vise ne radi sa koriscenom bazom
             _context = new NewDbContext(null);
             IsDbLoaded = false;
             LoadDataFromDB();

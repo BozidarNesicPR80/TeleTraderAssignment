@@ -138,6 +138,9 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
         </StackPanel>
+        <!-- Svaka stavka Combobox-a sadrzi objekat Type ili Exchange sa poljima Id i Name
+            Id je bitan kako bi se pronasao oznaceni type ili exchange u bazi i povezao sa simbolom
+        -->
         <StackPanel Grid.Row="9" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Label Content="Exchange:"  Width="120"/>
             <ComboBox  Width="150" Margin="0, 4, 0, 0" ItemsSource="{Binding Exchanges}" 

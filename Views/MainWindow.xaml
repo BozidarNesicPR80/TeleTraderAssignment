@@ -7,12 +7,14 @@
         xmlns:vm="clr-namespace:TeleTraderAssignment.ViewModel"
         mc:Ignorable="d"
         Title="All Symbols" Height="475" Width="800" Background="LightBlue">
+    <!-- Povezivanje View Model i View -->
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
     <Window.Resources>
         <Style x:Key="CustomButtonStyle" TargetType="Button">
             <Style.Triggers>
+                <!-- Drugaciji dizajn dugmica u zavisnosti da li je baza ucitana ili ne-->
                 <DataTrigger Binding="{Binding IsDbLoaded}" Value="True">
                     <Setter Property="Background" Value="#3498db" />
                     <Setter Property="Foreground" Value="White" />

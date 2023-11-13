@@ -108,6 +108,9 @@ namespace TeleTraderAssignment.ViewModel
             }
         }
 
+        //ovom prozoru se prosledjuje kontekst iz glavnog prozora gde se vec nalazi baza kako bi oba prozora koristila iste podatke
+        //posto se ovaj prozor koristi i za add i za view/edit funkcionalnosti, prosledjujemo isEdit flag koji govori 
+        //da li se radi o dodavanju ili azuriranju
         public SymbolManipulationViewModel(Symbol selectedSymbol, NewDbContext context, bool isEdit)
         {
             symbol = selectedSymbol ?? new Symbol();
@@ -141,8 +144,11 @@ namespace TeleTraderAssignment.ViewModel
             }
         }
 
+        //dodavanje i azuriranje obe zahtevaju cuvanje podataka u bazu pa se koristi ista metoda za taj rad
+        //na osnovu flag-a odlucujemo koje konkretne korake preduzimamo u cuvanju podataka
         private void ExecuteSaveChangesCommand(object parameter)
         {
+            //validacije kako bismo omogucili da se podaci dobrog formata upisuju u bazu
             if(!(SelectedExchange != null && SelectedType != null))
             {
                 isValid = false;
