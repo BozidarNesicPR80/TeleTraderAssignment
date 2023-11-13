@@ -175,6 +175,178 @@ namespace TeleTraderAssignment.ViewModel
             return true;
         }
 
+        private ICommand filterSymbolsCommand;
+
+        public ICommand FilterSymbolsCommand
+        {
+            get
+            {
+                if (filterSymbolsCommand == null)
+                {
+                    filterSymbolsCommand = new RelayCommand(ExecuteFilterSymbolsCommand, CanExecuteFilterSymbolsCommand);
+                }
+                return filterSymbolsCommand;
+            }
+        }
+
+        private void ExecuteFilterSymbolsCommand(object parameter)
+        {
+            if (!IsDbLoaded)
+            {
+                MessageBox.Show("Greska, Baza nije ucitana!");
+                return;
+            }
+
+            string selectedType = SelectedType;
+            string selectedExchange = SelectedExchange;
+
+            List<Symbol> filteredSymbols = symbols.FindAll(symbol =>
+            {
+                bool typeCondition = selectedType == "All" || symbol.Type.Name == selectedType;
+                bool exchangeCondition = selectedExchange == "All" || symbol.Exchange.Name == selectedExchange;
+
+                return typeCondition && exchangeCondition;
+            });
+
+            ViewSymbols = filteredSymbols;
+        }
+
+        private bool CanExecuteFilterSymbolsCommand(object parameter)
+        {
+            if (IsDbLoaded)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        private ICommand viewEditSymbolCommand;
+
+        public ICommand ViewEditSymbolCommand
+        {
+            get
+            {
+                if (viewEditSymbolCommand == null)
+                {
+                    viewEditSymbolCommand = new RelayCommand(ExecuteViewEditSymbolsCommand, CanExecuteViewEditSymbolsCommand);
+                }
+                return viewEditSymbolCommand;
+            }
+        }
+
+        private void ExecuteViewEditSymbolsCommand(object parameter)
+        {
+            if (!IsDbLoaded)
+            {
+                MessageBox.Show("Greska, Baza nije ucitana!");
+                return;
+            }
+
+            if (SelectedSymbol != null)
+            {
+                SymbolManipulationViewModel symbolDetailsViewModel = new SymbolManipulationViewModel(selectedSymbol, _context, true);
+                SymbolManipulationWindow symbolDetailsWindow = new SymbolManipulationWindow(symbolDetailsViewModel);
+                symbolDetailsWindow.ShowDialog();
+            }
+        }
+
+        private bool CanExecuteViewEditSymbolsCommand(object parameter)
+        {
+            if (IsDbLoaded)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private ICommand addSymbolCommand;
+
+        public ICommand AddSymbolCommand
+        {
+            get
+            {
+                if (addSymbolCommand == null)
+                {
+                    addSymbolCommand = new RelayCommand(ExecuteAddSymbolsCommand, CanExecuteAddSymbolsCommand);
+                }
+                return addSymbolCommand;
+            }
+        }
+
+        private void ExecuteAddSymbolsCommand(object parameter)
+        {
+            if (!IsDbLoaded)
+            {
+                MessageBox.Show("Greska, Baza nije ucitana!");
+                return;
+            }
+
+            SymbolManipulationViewModel symbolDetailsViewModel = new SymbolManipulationViewModel(null, _context, false);
+            SymbolManipulationWindow symbolDetailsWindow = new SymbolManipulationWindow(symbolDetailsViewModel);
+            symbolDetailsWindow.ShowDialog();
+        }
+
+        private bool CanExecuteAddSymbolsCommand(object parameter)
+        {
+            if (IsDbLoaded)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private ICommand deleteSymbolCommand;
+
+        public ICommand DeleteSymbolCommand
+        {
+            get
+            {
+                if (deleteSymbolCommand == null)
+                {
+                    deleteSymbolCommand = new RelayCommand(ExecuteDeleteSymbolCommand, CanExecuteDeleteSymbolCommand);
+                }
+                return deleteSymbolCommand;
+            }
+        }
+
+        private void ExecuteDeleteSymbolCommand(object parameter)
+        {
+            if (!IsDbLoaded)
+            {
+                MessageBox.Show("Greska, Baza nije ucitana!");
+                return;
+            }
+
+            if (SelectedSymbol != null)
+            {
+                // Pitajte korisnika da potvrdi brisanje
+                MessageBoxResult result = MessageBox.Show("Da li ste sigurni da želite da obrišete ovaj red?", "Potvrda brisanja", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    // Obrišite odabrani red iz baze podataka ili liste, zavisno od vašeg scenarija
+                    _context.Symbol.Remove(selectedSymbol);
+                    _context.SaveChanges();
+
+                    // Ponovo učitajte podatke kako biste osvežili DataGrid
+                    LoadDataFromDB();
+
+                    // Resetujte trenutno odabrani red
+                    selectedSymbol = null;
+                }
+            }
+        }
+
+        private bool CanExecuteDeleteSymbolCommand(object parameter)
+        {
+            if (IsDbLoaded)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void Refresh()
         {
             LoadDataFromDB();

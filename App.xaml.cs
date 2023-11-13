@@ -1,6 +1,9 @@
-﻿using System.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 using System.Data;
 using System.Windows;
+using TeleTraderAssignment.ViewModel;
+using TeleTraderAssignment.Views;
 
 namespace TeleTraderAssignment
 {
