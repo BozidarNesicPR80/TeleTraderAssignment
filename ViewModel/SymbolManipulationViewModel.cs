@@ -184,13 +184,14 @@ namespace TeleTraderAssignment.ViewModel
             Symbol.Type = SelectedType;
             Symbol.TypeId = SelectedType.Id;
 
+            List<Symbol> tempList = _context.Symbol.Where(sym => sym.Id != Symbol.Id).ToList();
             //provera da li su ticker i Isin jedinstveni
-            if (CheckIfIsinIsUnique(Symbol.Isin)){
+            if (CheckIfIsinIsUnique(tempList, Symbol.Isin)){
                 isValid = false;
                 MessageBox.Show("Isin must be unique");
                 return;
             }
-            if (CheckIfTickerIsUnique(Symbol.Ticker))
+            if (CheckIfTickerIsUnique(tempList, Symbol.Ticker))
             {
                 isValid = false;
                 MessageBox.Show("Ticker must be unique");
@@ -224,17 +225,17 @@ namespace TeleTraderAssignment.ViewModel
             return true;
         }
 
-        private bool CheckIfTickerIsUnique(string ticker)
+        private bool CheckIfTickerIsUnique(List<Symbol> tempList, string ticker)
         {
-                var numOfDuplicatedTicker = _context.Symbol
+                var numOfDuplicatedTicker = tempList
                     .Count(r => r.Ticker == ticker);
 
                 return numOfDuplicatedTicker == 1;
         }
 
-        private bool CheckIfIsinIsUnique(string isin)
+        private bool CheckIfIsinIsUnique(List<Symbol> tempList, string isin)
         {
-                var numOfDuplicatedIsin = _context.Symbol
+                var numOfDuplicatedIsin = tempList
                     .Count(r => r.Isin == isin);
 
                 return numOfDuplicatedIsin == 1;
